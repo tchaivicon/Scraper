@@ -1,0 +1,6 @@
+jsoup:
+  download:
+    path:
+      local: D:\Torrents
+      server: /home/chae/Downloads/toGo
+    url: https://sukebei.nyaa.si
