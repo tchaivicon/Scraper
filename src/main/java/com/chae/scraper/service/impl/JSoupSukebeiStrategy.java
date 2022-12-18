@@ -21,7 +21,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+@SuppressWarnings("FieldCanBeLocal")
 @Component
 public class JSoupSukebeiStrategy implements JSoupStrategy {
     private final String downloadPath = "D:"+ File.separator+"Torrents";
@@ -46,7 +48,7 @@ public class JSoupSukebeiStrategy implements JSoupStrategy {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Element table = doc.select("table").get(0);
+            Element table = Objects.requireNonNull(doc).select("table").get(0);
             Elements rows = table.select("tr.success");
             if(!query.contains("fc2")){
                 rows.addAll(table.select("tr.default"));
@@ -55,7 +57,7 @@ public class JSoupSukebeiStrategy implements JSoupStrategy {
                 Element td = row.select("td.text-center > a").first();
                 Element dateTd = row.select("td").get(DATE_TD);
 
-                String downloadUrl = url + td.attr("href");
+                String downloadUrl = url + Objects.requireNonNull(td).attr("href");
 
                 int dateParsedInt = Integer.parseInt(dateTd.html().split(" ")[0].replace("-", ""));
                 int dateParamInt = Integer.parseInt(date);
@@ -76,7 +78,7 @@ public class JSoupSukebeiStrategy implements JSoupStrategy {
                 .forEach(downloadUrl->{
                     try {
                         download(downloadUrl);
-                        Thread.sleep(5 * 1000);
+                        Thread.sleep(10 * 1000);
                     } catch (URISyntaxException | IOException | InterruptedException e) {
                         throw new RuntimeException(e);
                     }
@@ -106,7 +108,6 @@ public class JSoupSukebeiStrategy implements JSoupStrategy {
             try {
                 Files.move(tempFile, processedFile);
             }catch (Exception e){
-                e.printStackTrace();
                 System.out.println("failed : "+ getFileName(name));
             }
         }
